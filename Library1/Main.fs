@@ -1,4 +1,4 @@
-﻿module Library2
+﻿module App
 
 open System
 

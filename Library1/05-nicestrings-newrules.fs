@@ -1,4 +1,4 @@
-﻿module _05_nicestrings_newrules
+﻿module NiceStrings
 
 open Xunit
 open Swensen.Unquote

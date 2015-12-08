@@ -1,4 +1,4 @@
-﻿module Library1
+﻿module AdventOfCode
 
 open System.Reflection
 open System.Runtime.CompilerServices
