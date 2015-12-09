@@ -60,6 +60,8 @@
     <None Include="04-hash.fsx" />
     <None Include="05-nice-strings.fsx" />
     <Compile Include="05-nicestrings-newrules.fs" />
+    <None Include="06-lights-binary.fsx" />
+    <None Include="06-lights-gradient.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />

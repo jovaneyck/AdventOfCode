@@ -384,3 +384,5 @@ let result =
     endState 
     |> List.map (fun (coord, lvl) -> lvl) 
     |> List.fold (fun acc (Level lvl) -> acc + lvl) 0
+
+//Result: 14110788
