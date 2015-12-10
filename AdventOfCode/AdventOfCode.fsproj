@@ -62,6 +62,8 @@
     <Compile Include="05-nicestrings-newrules.fs" />
     <None Include="06-lights-binary.fsx" />
     <None Include="06-lights-gradient.fsx" />
+    <Compile Include="07-circuits.fs" />
+    <Compile Include="07-CircuitsTests.fs" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
