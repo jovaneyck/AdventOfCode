@@ -343,7 +343,7 @@ as RSHIFT 2 -> at"
 type WireId = string
 type Signal = uint16
 type Wire = { Id : WireId; Signal: Signal }
-type ShiftAmount = int
+type ShiftAmount = uint16
 type SignalSource =
     | ConstantValue of Signal
     | OtherWire of WireId
@@ -364,8 +364,8 @@ let interpretLine tokens =
     | "NOT" :: source :: "->" :: identifier :: [] -> {Source = NOT (interpretSource source); Wire = identifier}
     | srcA :: "AND" :: srcB :: "->" :: identifier :: [] -> {Source = AND ((interpretSource srcA), (interpretSource srcB)); Wire = identifier}
     | srcA :: "OR" :: srcB :: "->" :: identifier :: [] -> {Source = OR ((interpretSource srcA), (interpretSource srcB)); Wire = identifier}
-    | source :: "LSHIFT" :: amount :: "->" :: identifier :: [] -> {Source = LSHIFT ((interpretSource source), Int32.Parse(amount)); Wire = identifier}
-    | source :: "RSHIFT" :: amount :: "->" :: identifier :: [] -> {Source = RSHIFT ((interpretSource source), Int32.Parse(amount)); Wire = identifier}
+    | source :: "LSHIFT" :: amount :: "->" :: identifier :: [] -> {Source = LSHIFT ((interpretSource source), UInt16.Parse(amount)); Wire = identifier}
+    | source :: "RSHIFT" :: amount :: "->" :: identifier :: [] -> {Source = RSHIFT ((interpretSource source), UInt16.Parse(amount)); Wire = identifier}
     | sourceId :: "->" :: identifier :: [] -> {Source = (interpretSource sourceId); Wire = identifier}
     | unrecognized -> failwith (sprintf "Unrecognized command: %A" unrecognized)
 
@@ -385,22 +385,31 @@ let lshifted s amount = s <<< 2
 let rshifted s amount = s >>> 2
 let noted s = ~~~s
 
-let instructionsParsed = instructions |> parse
-
-let rec calculate (source : SignalSource) = 
-    printfn "Calculating source %A" source
+let memoize f =
+    let cache = ref Map.empty
+    fun x ->
+        match (!cache).TryFind(x) with
+        | Some res -> res
+        | None ->
+             let res = f x
+             cache := (!cache).Add(x,res)
+             res
+let parsedInstructions = instructions |> parse
+let rec calculate = memoize (fun (source : SignalSource) ->
     match source with
     | ConstantValue v -> v
-    | OtherWire o -> calculateSignalFor o
+    | OtherWire o -> calculate (parsedInstructions |> List.find (fun {Wire = id} -> id = o)).Source
     | NOT o -> noted (calculate o)
     | LSHIFT (o, amount) -> lshifted (calculate o) amount
     | RSHIFT (o, amount) -> rshifted (calculate o) amount
     | AND (x,y) -> anded (calculate x) (calculate y)
-    | OR (x,y) -> ored (calculate x) (calculate y)
-and
-    calculateSignalFor wireId = 
-        printfn "Calculating wire %s" wireId
-        (instructionsParsed |> List.find (fun {Wire = id} -> wireId = id)).Source
-        |> calculate
+    | OR (x,y) -> ored (calculate x) (calculate y))
 
-let result = calculateSignalFor "a"
+
+let result = 
+    parsedInstructions
+    |> List.map (fun i -> (i.Wire, calculate (OtherWire i.Wire)))
+    
+let forA =
+    result
+    |> List.find (fun (id, _) -> id = "a")
