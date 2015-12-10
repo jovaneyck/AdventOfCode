@@ -5,7 +5,7 @@ open System
 type WireId = string
 type Signal = uint16
 type Wire = { Id : WireId; Signal: Signal }
-type ShiftAmount = uint16
+type ShiftAmount = int
 type SignalSource =
     | ConstantValue of Signal
     | OtherWire of WireId
@@ -26,8 +26,8 @@ let interpretLine tokens =
     | "NOT" :: source :: "->" :: identifier :: [] -> {Source = NOT (interpretSource source); Wire = identifier}
     | srcA :: "AND" :: srcB :: "->" :: identifier :: [] -> {Source = AND ((interpretSource srcA), (interpretSource srcB)); Wire = identifier}
     | srcA :: "OR" :: srcB :: "->" :: identifier :: [] -> {Source = OR ((interpretSource srcA), (interpretSource srcB)); Wire = identifier}
-    | source :: "LSHIFT" :: amount :: "->" :: identifier :: [] -> {Source = LSHIFT ((interpretSource source), UInt16.Parse(amount)); Wire = identifier}
-    | source :: "RSHIFT" :: amount :: "->" :: identifier :: [] -> {Source = RSHIFT ((interpretSource source), UInt16.Parse(amount)); Wire = identifier}
+    | source :: "LSHIFT" :: amount :: "->" :: identifier :: [] -> {Source = LSHIFT ((interpretSource source), Int32.Parse(amount)); Wire = identifier}
+    | source :: "RSHIFT" :: amount :: "->" :: identifier :: [] -> {Source = RSHIFT ((interpretSource source), Int32.Parse(amount)); Wire = identifier}
     | sourceId :: "->" :: identifier :: [] -> {Source = (interpretSource sourceId); Wire = identifier}
     | unrecognized -> failwith (sprintf "Unrecognized command: %A" unrecognized)
 
@@ -37,23 +37,23 @@ let parseLine (line : string) =
     |> interpretLine
 
 let parse (inputText : string) = 
-    inputText.Split('\n')
+    inputText.Split([|"\r\n"|], StringSplitOptions.None)
     |> List.ofArray
     |> List.map parseLine
 
 let anded x y = x &&& y
 let ored x y = x ||| y
-let lshifted s amount = s <<< 2
-let rshifted s amount = s >>> 2
+let lshifted s amount = s <<< amount
+let rshifted s amount = s >>> amount
 let noted s = ~~~s
 
 let memoize f =
     let cache = ref Map.empty
-    fun x ->
+    fun i x ->
         match (!cache).TryFind(x) with
         | Some res -> res
         | None ->
-             let res = f x
+             let res = f i x
              cache := (!cache).Add(x,res)
              res
 
