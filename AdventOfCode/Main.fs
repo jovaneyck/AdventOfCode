@@ -11,7 +11,7 @@ let main args =
     |> List.ofSeq
     |> calculateLenghtsFor
 //    |> Seq.iter (fun (Line l, ll, iml) -> (printfn "WUT? Line: %s \n stringlength: %d \n inmem: %d" l ll iml))
-    |> Seq.map (fun (l, line, inmem) -> (l, line - inmem))
+    |> Seq.map (fun (l, string, inmem, encoded) -> (l, encoded - string))
     |> Seq.map (fun (_, delta) -> delta)
     |> Seq.sum
     |> (printfn "Total delta: %d")
