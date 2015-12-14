@@ -12,8 +12,8 @@ let hearSay (number : string) =
     number.ToCharArray()
     |> List.ofArray
     |> hearSayChars
-    |> List.map (fun ident -> (ident |> List.length, ident |> List.head))
-    |> List.map (fun (cnt, c) -> cnt.ToString() + c.ToString())
+    |> List.map (fun identicals -> (identicals |> List.length, identicals |> List.head))
+    |> List.map (fun (nb, char) -> nb.ToString() + char.ToString())
     |> List.reduce (+)
 
 let rec repeat f times input =
