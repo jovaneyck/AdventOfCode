@@ -69,6 +69,8 @@
     <None Include="09-TravelingSanta.fsx" />
     <Compile Include="10-hearsay.fs" />
     <None Include="11-passwords.fsx" />
+    <Compile Include="12-input.fs" />
+    <None Include="12-JSON-numbers.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
