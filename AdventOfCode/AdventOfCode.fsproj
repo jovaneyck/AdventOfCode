@@ -66,6 +66,9 @@
     <Compile Include="07-CircuitsTests.fs" />
     <Compile Include="08-stringlengths-input.fs" />
     <Compile Include="08-stringlengths.fs" />
+    <None Include="09-TravelingSanta.fsx" />
+    <Compile Include="10-hearsay.fs" />
+    <None Include="11-passwords.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
