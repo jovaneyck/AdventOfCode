@@ -9,10 +9,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Library1</RootNamespace>
     <AssemblyName>Library1</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Name>AdventOfCode</Name>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,13 +70,19 @@
     <None Include="09-TravelingSanta.fsx" />
     <Compile Include="10-hearsay.fs" />
     <None Include="11-passwords.fsx" />
-    <Compile Include="12-input.fs" />
+    <Compile Include="12-JsonNumbersInput.fs" />
+    <Compile Include="12-JSON-numbers-without-red.fs" />
+    <Compile Include="12-JSON-numbers-tests.fs" />
     <None Include="12-JSON-numbers.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\packages\FSharp.Data.2.2.5\lib\net40\FSharp.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
@@ -83,6 +90,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="Unquote">
       <HintPath>..\packages\Unquote.3.1.0\lib\net45\Unquote.dll</HintPath>
       <Private>True</Private>
