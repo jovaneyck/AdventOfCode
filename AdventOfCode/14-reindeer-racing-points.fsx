@@ -5,11 +5,16 @@ type ReindeerSpecification = {Name : string; Speed : int; SprintDuration : int; 
 type State = {Status : Status; Distance : int; Reindeer: ReindeerSpecification; Points : int}
 
 let stepState (state : State)= 
+    let r = state.Reindeer
     match state with
-    | {Status = Resting 0; Distance = d; Reindeer = r; Points = p} -> {Status = Running (r.SprintDuration - 1); Distance = d + r.Speed; Reindeer = r; Points = p}
-    | {Status = Resting toRest; Distance = d; Reindeer = r; Points = p} -> {Status = Resting (toRest - 1); Distance = d; Reindeer = r; Points = p}
-    | {Status = Running 0; Distance = d; Reindeer = r; Points = p} -> {Status = Resting (r.RestDuration - 1); Distance = d; Reindeer = r; Points = p}
-    | {Status = Running toGo; Distance = d; Reindeer = r; Points = p} -> {Status = Running (toGo - 1); Distance = d + r.Speed; Reindeer = r; Points = p}
+    | {Status = Resting 0} -> 
+        {state with Status = Running (r.SprintDuration - 1); Distance = state.Distance + r.Speed}
+    | {Status = Resting toRest} -> 
+        {state with Status = Resting (toRest - 1)}
+    | {Status = Running 0} -> 
+        {state with Status = Resting (r.RestDuration - 1)}
+    | {Status = Running toGo} -> 
+        {state with Status = Running (toGo - 1); Distance = state.Distance + r.Speed}
 
 let step states = 
     states
