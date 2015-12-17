@@ -121,11 +121,11 @@ let rec lookupHappiness (relations : HappinessRelation list) (Name a) (Name b) =
     match relations with
     | {From = Name x; To = Name y; Change = c} :: _  
         when x = a && y = b-> c
-    | {From = Name x; To = Name y; Change = c} :: _  
-        when x = "Me" || y = "Me" -> Gain 0
     | _ :: t -> lookupHappiness t (Name a) (Name b)
     | _ -> failwith (sprintf "No happiness relation found between %s and %s" a b)
-let happinessFor a b = lookupHappiness parsedInput a b
+let happinessFor a b = 
+    if a = Name "Me" || b = Name "Me" then Gain 0
+    else lookupHappiness parsedInput a b
     
 let sumHappiness changes = 
     let rec sumOf c acc =
@@ -142,8 +142,9 @@ let happinessOfArrangement =
     | h :: t -> 
         h :: t @ [h] |> List.pairwise |> List.collect (fun (x,y) -> [happinessFor x y; happinessFor y x]) |> sumHappiness
 
+printfn "Go!"
 let result =
-    allGuests 
+    (Name "Me") :: allGuests 
     |> allSeatingArrangements
     |> List.map (fun arrangement -> (arrangement, happinessOfArrangement arrangement))
     |> List.maxBy (fun (a, h) -> h)
