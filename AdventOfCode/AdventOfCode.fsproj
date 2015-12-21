@@ -74,6 +74,10 @@
     <Compile Include="12-JSON-numbers-without-red.fs" />
     <Compile Include="12-JSON-numbers-tests.fs" />
     <None Include="12-JSON-numbers.fsx" />
+    <None Include="13-seating-arrangement.fsx" />
+    <None Include="14-reindeer-racing.fsx" />
+    <None Include="14-reindeer-racing-points.fsx" />
+    <None Include="15-milkdunking.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
