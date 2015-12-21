@@ -72,16 +72,29 @@ let isEqualOrUnknown v =
     | None -> true
     | Some x when x = v -> true
     | _ -> false
+
+let isGreaterThanOrUnknown v =
+    function
+    | None -> true
+    | Some x when x > v -> true
+    | _ -> false
+
+let isFewerThanOrUnknown v =
+    function
+    | None -> true
+    | Some x when x < v -> true
+    | _ -> false
+
 let crossReference (description : SueDescription) =
     Some description
     |> Option.filter (fun d -> d.Children |> isEqualOrUnknown 3)
-    |> Option.filter (fun d -> d.Cats |> isEqualOrUnknown 7)
+    |> Option.filter (fun d -> d.Cats |> isGreaterThanOrUnknown 7)
     |> Option.filter (fun d -> d.Samoyeds |> isEqualOrUnknown 2)
-    |> Option.filter (fun d -> d.Pomeranians |> isEqualOrUnknown 3)
+    |> Option.filter (fun d -> d.Pomeranians |> isFewerThanOrUnknown 3)
     |> Option.filter (fun d -> d.Akitas |> isEqualOrUnknown 0)
     |> Option.filter (fun d -> d.Vizslas |> isEqualOrUnknown 0)
-    |> Option.filter (fun d -> d.Goldfish |> isEqualOrUnknown 5)
-    |> Option.filter (fun d -> d.Trees |> isEqualOrUnknown 3)
+    |> Option.filter (fun d -> d.Goldfish |> isFewerThanOrUnknown 5)
+    |> Option.filter (fun d -> d.Trees |> isGreaterThanOrUnknown 3)
     |> Option.filter (fun d -> d.Cars |> isEqualOrUnknown 2)
     |> Option.filter (fun d -> d.Perfumes |> isEqualOrUnknown 1)
     
