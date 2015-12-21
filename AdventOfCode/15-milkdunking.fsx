@@ -1,7 +1,9 @@
 ﻿open System
 
-let rawInput = @"Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
-Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
+let rawInput = @"Sugar: capacity 3, durability 0, flavor 0, texture -3, calories 2
+Sprinkles: capacity -3, durability 3, flavor 0, texture 0, calories 9
+Candy: capacity -1, durability 0, flavor 4, texture 0, calories 1
+Chocolate: capacity 0, durability 0, flavor -2, texture 2, calories 8"
 
 type Ingredient = {Name : string; Capacity : int; Durability : int; Flavor : int; Texture : int; Calories : int;}
 type Score = {Capacity : int; Durability : int; Flavor : int; Texture : int; Calories : int;}
@@ -72,5 +74,6 @@ let totals ({Capacity = cap; Durability = d; Flavor = f; Texture = t} : Score) =
 allDistributions nbIngredients 100
 |> List.map (fun dist -> takeMeasure parsedInput dist)
 |> List.map (fun el -> (el, el |> score))
+|> List.filter (fun (el, score) -> score.Calories = 500)
 |> List.map (fun (el, score) -> (el, score, score |> totals))
 |> List.maxBy (fun (el, score, total) -> total)
