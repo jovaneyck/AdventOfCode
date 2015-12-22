@@ -39,4 +39,4 @@ let adventInput = @"50
 let parsedInput = adventInput.Split('\n') |> List.ofArray |> List.map(fun el -> el |> System.Int32.Parse)
 let exampleContainers = [20;15;10;5;5]
 
-validCombinations 150 parsedInput |> List.length
+validCombinations 150 parsedInput |> List.groupBy List.length |> List.minBy fst |> snd |> List.length
