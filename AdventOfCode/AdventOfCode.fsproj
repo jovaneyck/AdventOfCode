@@ -80,6 +80,7 @@
     <None Include="15-milkdunking.fsx" />
     <Compile Include="16-aunt-sue-input.fs" />
     <None Include="16-aunt-sue.fsx" />
+    <None Include="17-eggnog.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
