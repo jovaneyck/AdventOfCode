@@ -23,8 +23,8 @@ let parseToken rowNb columnNb token : Light =
     ((rowNb,columnNb), state)
 
 let parseLine lineNb (l : String) =
-    let chars = l.ToCharArray()|> List.ofArray
-    chars
+    l.ToCharArray()
+    |> List.ofArray
     |> List.mapi (parseToken lineNb)
 
 let parse (input : String) =
@@ -66,18 +66,35 @@ let render (grid : Grid) =
     |> toText
     |> printfn "%s"
 
-let nbLivingNeighbours grid light = 0
+let allPossibleNeighbours ((x,y) : Location) : Location list = 
+    [ (x-1, y+1); (x, y+1); (x+1, y+1);
+      (x-1, y);             (x+1, y);
+      (x-1, y-1); (x, y-1); (x+1, y-1)]
+
+let livingAt grid loc = 
+    grid 
+    |> List.tryFind (fun (lightLoc, state) -> loc = lightLoc && state = On)
+
+let nbLivingNeighbours grid loc = 
+    loc
+    |> allPossibleNeighbours
+    |> List.map (livingAt grid)
+    |> List.choose id
+    |> List.length
+
+
 let withLivingNeighbours g =
     g
-    |> List.map (fun l -> (l, nbLivingNeighbours g l))
+    |> List.map (fun ((loc, state) as light) -> (light, nbLivingNeighbours g loc))
 
-let nextGeneration g = g
+let nextGeneration (lightsWithLivingNeighbours : (Light * int) list) = 
+    lightsWithLivingNeighbours
+    |> List.map (fun ((loc, state), nbLivingNeighbours) -> (loc, nextState state nbLivingNeighbours))
 
 let step (g : Grid) : Grid =
     g
     |> withLivingNeighbours
     |> nextGeneration
-    |> (fun whatever -> g)
 
 let rec repeat n f x =
     if n = 1 then
@@ -85,7 +102,14 @@ let rec repeat n f x =
     else 
         repeat (n - 1) f (f x)
 
+let printNbLightsOn g = 
+    g 
+    |> List.filter (fun (_, state) -> state = On)
+    |> List.length
+    |> (printfn "Lights on: %d")
+
 exampleInput 
 |> parse
 |> repeat 4 step
+|> (fun g -> g |> printNbLightsOn; g)
 |> render
