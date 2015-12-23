@@ -4,6 +4,7 @@ type RewriteRule = {Src : Token; Dest : Token}
 let rulesInput = @"H => HO
 H => OH
 O => HH"
+let textInput = "HOH"
 
 let parseToken (token : string) = 
     token.ToCharArray() 
@@ -18,5 +19,17 @@ let parse (input : string) =
     |> List.ofArray
     |> List.map parseLine
 
-rulesInput
-|> parse
+let allRewrites text rule = [text; text]
+
+let parseText (text : string) = text.ToCharArray() |> List.ofArray
+
+let toString (chars : char list) = chars |> Array.ofList |> System.String
+
+let rewritesFor rawRules rawText =
+    rawRules
+    |> parse
+    |> List.collect (allRewrites (rawText |> parseText)) 
+    |> List.map toString
+    |> List.distinct
+
+rewritesFor rulesInput textInput
