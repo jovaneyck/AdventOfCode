@@ -1,11 +1,17 @@
 ﻿open System
 
-let exampleInput = @".#.#.#
+//let exampleInput = @".#.#.#
+//...##.
+//#....#
+//..#...
+//#.#..#
+//####.."
+let exampleInput = @"##.#.#
 ...##.
 #....#
 ..#...
 #.#..#
-####.."
+####.#"
 #load "18-GoL.fs"
 open GoL
 

@@ -29,13 +29,16 @@ let parse (input : String) =
     |> List.mapi parseLine
     |> List.collect id
 
-let nextState s nbOnNeighbours =
-    match (s, nbOnNeighbours) with
-    | (On, 2) -> On
-    | (On, 3) -> On
-    | (On, _) -> Off
-    | (Off, 3) -> On
-    | (Off, _) -> Off
+let nextState dimension (x,y) s nbOnNeighbours =
+    if [(0,0); (0, dimension - 1); (dimension - 1, 0); (dimension - 1, dimension - 1)] |> List.contains (x,y)
+    then On
+    else
+        match (s, nbOnNeighbours) with
+        | (On, 2) -> On
+        | (On, 3) -> On
+        | (On, _) -> Off
+        | (Off, 3) -> On
+        | (Off, _) -> Off
 
 let sort (g : Grid) =
     g
@@ -67,13 +70,16 @@ let allPossibleNeighbours ((x,y) : Location) : Location list =
       (x-1, y);             (x+1, y);
       (x-1, y-1); (x, y-1); (x+1, y-1)]
 
+let dimension g =
+    g |> List.length |> (float) |> Math.Sqrt |> (int)
+
 let livingAt (grid : Grid) (x,y) = 
-    let dimension = grid |> List.length |> (float) |> Math.Sqrt |> (int)
+    let d = dimension grid 
     
-    if(x < 0 || y < 0 || x >= dimension || y >= dimension) 
+    if(x < 0 || y < 0 || x >= d || y >= d) 
     then false
     else 
-        let index = x * dimension + y
+        let index = x * d + y
         let (loc,state) = grid.[index]
         state = On
 
@@ -89,8 +95,9 @@ let withLivingNeighbours g =
     |> List.map (fun ((loc, state) as light) -> (light, nbLivingNeighbours g loc))
 
 let nextGeneration (lightsWithLivingNeighbours : (Light * int) list) = 
+    let dim = dimension lightsWithLivingNeighbours
     lightsWithLivingNeighbours
-    |> List.map (fun ((loc, state), nbLivingNeighbours) -> (loc, nextState state nbLivingNeighbours))
+    |> List.map (fun ((loc, state), nbLivingNeighbours) -> (loc, nextState dim loc state nbLivingNeighbours))
 
 let step (g : Grid) : Grid =
     g
