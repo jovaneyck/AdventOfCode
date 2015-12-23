@@ -81,6 +81,8 @@
     <Compile Include="16-aunt-sue-input.fs" />
     <None Include="16-aunt-sue.fsx" />
     <None Include="17-eggnog.fsx" />
+    <Compile Include="18-GoL.fs" />
+    <Compile Include="18-GoLInput.fs" />
     <None Include="18-GoL-Lights.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
