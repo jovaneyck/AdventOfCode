@@ -84,6 +84,7 @@
     <Compile Include="18-GoL.fs" />
     <Compile Include="18-GoLInput.fs" />
     <None Include="18-GoL-Lights.fsx" />
+    <None Include="19-RewriteDNA.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
