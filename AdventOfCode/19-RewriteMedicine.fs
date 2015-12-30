@@ -107,9 +107,15 @@ let medicineFound (strings : char list list) =
     strings
     |> List.contains parsedMedicine
 
-let rec medicineFoundInGeneration g input =
+let rec addMany xs set =
+    match xs with
+    | [] -> set
+    | h :: t -> addMany t (set |> Set.add h )
+
+let rec medicineFoundInGeneration g input medicinesAlreadyFound =
     if medicineFound input then
         g
     else
         printfn "Processing generation %i. Currently exploring %i paths." g (input |> List.length)
-        medicineFoundInGeneration (g+1) (recStep input)
+        let recResult = recStep input |> List.except medicinesAlreadyFound
+        medicineFoundInGeneration (g+1) recResult (medicinesAlreadyFound |> addMany recResult)
