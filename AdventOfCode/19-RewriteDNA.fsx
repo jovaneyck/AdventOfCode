@@ -1,50 +1,14 @@
 ﻿type Token = char list
 type RewriteRule = {Src : Token; Dest : Token}
 
-let rulesInput = @"Al => ThF
-Al => ThRnFAr
-B => BCa
-B => TiB
-B => TiRnFAr
-Ca => CaCa
-Ca => PB
-Ca => PRnFAr
-Ca => SiRnFYFAr
-Ca => SiRnMgAr
-Ca => SiTh
-F => CaF
-F => PMg
-F => SiAl
-H => CRnAlAr
-H => CRnFYFYFAr
-H => CRnFYMgAr
-H => CRnMgYFAr
-H => HCa
-H => NRnFYFAr
-H => NRnMgAr
-H => NTh
-H => OB
-H => ORnFAr
-Mg => BF
-Mg => TiMg
-N => CRnFAr
-N => HSi
-O => CRnFYFAr
-O => CRnMgAr
-O => HP
-O => NRnFAr
-O => OTi
-P => CaP
-P => PTi
-P => SiRnFAr
-Si => CaSi
-Th => ThCa
-Ti => BP
-Ti => TiTi
-e => HF
-e => NAl
-e => OMg"
-let textInput = "ORnPBPMgArCaCaCaSiThCaCaSiThCaCaPBSiRnFArRnFArCaCaSiThCaCaSiThCaCaCaCaCaCaSiRnFYFArSiRnMgArCaSiRnPTiTiBFYPBFArSiRnCaSiRnTiRnFArSiAlArPTiBPTiRnCaSiAlArCaPTiTiBPMgYFArPTiRnFArSiRnCaCaFArRnCaFArCaSiRnSiRnMgArFYCaSiRnMgArCaCaSiThPRnFArPBCaSiRnMgArCaCaSiThCaSiRnTiMgArFArSiThSiThCaCaSiRnMgArCaCaSiRnFArTiBPTiRnCaSiAlArCaPTiRnFArPBPBCaCaSiThCaPBSiThPRnFArSiThCaSiThCaSiThCaPTiBSiRnFYFArCaCaPRnFArPBCaCaPBSiRnTiRnFArCaPRnFArSiRnCaCaCaSiThCaRnCaFArYCaSiRnFArBCaCaCaSiThFArPBFArCaSiRnFArRnCaCaCaFArSiRnFArTiRnPMgArF"
+let seed = "e"
+let medicine = "HOHOHO"
+let rulesInput = @"e => H
+e => O
+H => HO
+H => OH
+O => HH"
+
 
 let parseToken (token : string) = 
     token.ToCharArray() 
@@ -79,14 +43,34 @@ let parseText (text : string) = text.ToCharArray() |> List.ofArray
 
 let toString (chars : char list) : string = chars |> System.String.Concat
 
+let step input rules =
+    rules
+    |> List.collect (allRewrites input)
+    |> List.except [input]
+    |> List.distinct
+
 let rewritesFor rawRules rawText =
     let parsedInput = rawText |> parseText
     rawRules
     |> parse
-    |> List.collect (allRewrites parsedInput) 
-    |> List.except [parsedInput]
+    |> step parsedInput
     |> List.map toString
-    |> List.distinct
 
-let rewrites = rewritesFor rulesInput textInput
-let nbRewrites = rewrites |> List.length
+let parsedInput = seed |> parseText
+let parsedRules = rulesInput |> parse
+
+let recStep inp = 
+    inp |> List.collect (fun i -> step i parsedRules)
+
+let parsedMedicine = medicine |> parseText
+let medicineFound (strings : char list list) =
+    strings
+    |> List.contains parsedMedicine
+
+let rec medicineFoundInGeneration g input =
+    if medicineFound input then
+        g
+    else
+        medicineFoundInGeneration (g+1) (recStep input)
+
+let generation = medicineFoundInGeneration 0 [parsedInput]
