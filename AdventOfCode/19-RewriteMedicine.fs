@@ -1,4 +1,6 @@
-﻿type Token = char list
+﻿module RewriteMedicine
+
+type Token = char list
 type RewriteRule = {Src : Token; Dest : Token}
 
 let seed = "e"
@@ -111,5 +113,3 @@ let rec medicineFoundInGeneration g input =
     else
         printfn "Processing generation %i. Currently exploring %i paths." g (input |> List.length)
         medicineFoundInGeneration (g+1) (recStep input)
-
-//let generation = medicineFoundInGeneration 0 [parsedInput]

@@ -1,18 +1,13 @@
 ﻿module App
 
 open System
-open GoL
-open GoLInput
+open RewriteMedicine
 
 [<EntryPoint>]
 let main args = 
     printfn "Go!"
 
-    input
-    |> parse
-    |> repeat 100 step
-    |> (fun g -> g |> printNbLightsOn; g)
-    |> ignore
-
+    let generation = medicineFoundInGeneration 0 [parsedInput]
+    printfn "Found the medicine in generation %i!" generation
     Console.ReadKey() |> ignore
     0
