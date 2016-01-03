@@ -1,13 +1,13 @@
 ﻿module App
 
 open System
-open RewriteMedicine
+open InfiniteElves
 
 [<EntryPoint>]
 let main args = 
     printfn "Go!"
 
-    let generation = medicineFoundInGeneration 0 [parsedInput] (parsedInput |> Set.empty.Add)
-    printfn "Found the medicine in generation %i!" generation
+    let solution = result
+    printfn "Found the house: %A" solution
     Console.ReadKey() |> ignore
     0
