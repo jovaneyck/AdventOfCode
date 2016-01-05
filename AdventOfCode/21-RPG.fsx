@@ -116,6 +116,5 @@ allLoadouts
 |> List.map (fun l -> 
     let (cost, char) = toCharacter 100 l
     (l,cost,char))
-|> List.filter (fun (_, _, char) -> winsAgainst (boss, char))
-|> List.sortBy(fun (_,c,_) -> c)
-|> List.head
+|> List.filter (fun (_, _, char) -> not (winsAgainst (boss, char)))
+|> List.maxBy(fun (_,c,_) -> c)
