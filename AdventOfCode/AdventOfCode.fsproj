@@ -88,6 +88,8 @@
     <None Include="19-RewriteDNA.fsx" />
     <Compile Include="20-InfiniteElves.fs" />
     <None Include="20-InfiniteElves.fsx" />
+    <None Include="21-RPG.fsx" />
+    <None Include="22-Magic-RPG.fsx" />
     <Compile Include="Main.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
