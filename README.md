@@ -1,2 +1,2 @@
-# AdventOfCode2015
-My take at the [Advent of Code](http://adventofcode.com/) 2015 challenges as a way to learn the basics of F#. Fun!
+# AdventOfCode
+My take at the [Advent of Code](http://adventofcode.com/) challenges as a way to learn the basics of F#. Fun!
