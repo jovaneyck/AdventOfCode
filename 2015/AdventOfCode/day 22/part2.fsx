@@ -3,6 +3,7 @@ open Swensen.Unquote
 
 //The big idea: do a breadth-first search (BFS), generating all possible moves for the player that make sense (i.e. enough mana, etc).
 //Continue down a path until someone hits 0HP or we run out of spells we can cast with our current mana level.
+// Did some manual pruning of the search space once we got some initial results until we hit a lower bound.
 
 let input = System.IO.File.ReadAllLines $"{__SOURCE_DIRECTORY__}\input.txt"
 
