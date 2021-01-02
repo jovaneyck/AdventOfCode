@@ -148,7 +148,7 @@ let playTurn state : State list =
         | Player -> playerMove afterEffects
     moved |> List.map nextPlayer
 
-let rec playGames state =
+let rec playGames currentOptimal state =
     if state.boss.hp <= 0 then 
         printfn "WIN %d" state.totalManaSpent
         [state] //We win!
@@ -157,13 +157,13 @@ let rec playGames state =
     else 
         //We are still playing!
         let nextStates = playTurn state
-        //some hand-rolled capping after a number of runs
-        //We already found states with MP: 1743, 1461,1388,953
-        let stillPossible = nextStates |> List.filter (fun s -> s.totalManaSpent <= 953)
-        stillPossible |> List.collect playGames
+        let stillPossible = nextStates |> List.filter (fun s -> s.totalManaSpent <= currentOptimal)
+        stillPossible |> List.collect (playGames currentOptimal)
 
+//some hand-rolled prunings after a number of runs
+//We already found states with MP: 1743, 1461,1388,953
 let inputState = init { hp = 55; damage = 8 }
-playGames inputState
+playGames 953 inputState
 
 let stateWithMana mana = init { hp = 0; damage = 0} |> fun s -> { s with player = { s.player with mana = mana } }
 let stateWithManaAndEffects (mana, effects) = { stateWithMana mana with effects = effects |> List.map (fun e -> (e,1)) }
