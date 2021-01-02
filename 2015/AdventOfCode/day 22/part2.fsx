@@ -3,7 +3,7 @@ open Swensen.Unquote
 
 //The big idea: do a breadth-first search (BFS), generating all possible moves for the player that make sense (i.e. enough mana, etc).
 //Continue down a path until someone hits 0HP or we run out of spells we can cast with our current mana level.
-// Did some manual pruning of the search space once we got some initial results until we hit a lower bound.
+//Once we find a "win", we can start pruning the search space and throw away everything with excess MP consumption.
 
 let input = System.IO.File.ReadAllLines $"{__SOURCE_DIRECTORY__}\input.txt"
 
@@ -154,26 +154,27 @@ let playTurn state : State list =
         | Player -> playerMove afterEffects
     moved |> List.map nextPlayer
 
-let mutable optimal = System.Int32.MaxValue
-let rec playGames state =
+let rec prune opt states =
+    match states with
+    | [] -> opt
+    | s :: ss ->
+        let next = playGames opt s |> Option.defaultValue opt
+        let nextOptimal = min opt next
+        let pruned = ss |> List.filter (fun s -> s.totalManaSpent <= nextOptimal)
+        prune nextOptimal pruned
+and playGames (optimal : int) state =
     if state.boss.hp <= 0 then 
-        printfn "WIN %d" state.totalManaSpent
-        if state.totalManaSpent < optimal then optimal <- state.totalManaSpent
+        //printfn "WIN %d" state.totalManaSpent
         Some state.totalManaSpent //We win!
     else if state.player.hp <= 0 then 
         None //we lose!
     else 
         //We are still playing!
         let candidates = playTurn state
-        let pruned = candidates |> List.filter (fun s -> s.totalManaSpent <= optimal)
-        let played = pruned |> List.choose playGames
-        if played |> List.isEmpty then None
-        else played |> List.min |> Some
-
-//some hand-rolled prunings after a number of runs
-//We already found states with MP: 2000,1295,1289
+        prune optimal candidates |> Some
+        
 let inputState = init { hp = 55; damage = 8 }
-playGames inputState
+let part2 = playGames System.Int32.MaxValue inputState
 
 let stateWithMana mana = init { hp = 0; damage = 0} |> fun s -> { s with player = { s.player with mana = mana } }
 let stateWithManaAndEffects (mana, effects) = { stateWithMana mana with effects = effects |> List.map (fun e -> (e,1)) }
