@@ -154,22 +154,26 @@ let playTurn state : State list =
         | Player -> playerMove afterEffects
     moved |> List.map nextPlayer
 
-let rec playGames currentOptimal state =
+let mutable optimal = System.Int32.MaxValue
+let rec playGames state =
     if state.boss.hp <= 0 then 
         printfn "WIN %d" state.totalManaSpent
-        [state] //We win!
+        if state.totalManaSpent < optimal then optimal <- state.totalManaSpent
+        Some state.totalManaSpent //We win!
     else if state.player.hp <= 0 then 
-        [] //we lose!
+        None //we lose!
     else 
         //We are still playing!
         let candidates = playTurn state
-        let pruned = candidates |> List.filter (fun s -> s.totalManaSpent <= currentOptimal)
-        pruned |> List.collect (playGames currentOptimal)
+        let pruned = candidates |> List.filter (fun s -> s.totalManaSpent <= optimal)
+        let played = pruned |> List.choose playGames
+        if played |> List.isEmpty then None
+        else played |> List.min |> Some
 
 //some hand-rolled prunings after a number of runs
 //We already found states with MP: 2000,1295,1289
 let inputState = init { hp = 55; damage = 8 }
-playGames 1289 inputState
+playGames inputState
 
 let stateWithMana mana = init { hp = 0; damage = 0} |> fun s -> { s with player = { s.player with mana = mana } }
 let stateWithManaAndEffects (mana, effects) = { stateWithMana mana with effects = effects |> List.map (fun e -> (e,1)) }
