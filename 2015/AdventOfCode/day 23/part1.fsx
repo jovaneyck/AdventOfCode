@@ -128,6 +128,7 @@ let solve input =
 
 let part1 = solve input
 part1 |> read B |> printfn "%d"
+
 let t () = 
     printf "Testing.."
     test <@ parseInstructions ["hlf a"; "hlf b"] = [Half A; Half B] @>
