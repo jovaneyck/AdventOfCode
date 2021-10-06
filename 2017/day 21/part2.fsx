@@ -62,13 +62,17 @@ let orientations (m : 'a[,]) : 'a[,] seq =
     }
     |> Seq.distinct
 
+let recipeOrientations recipe =
+    let src, dest = recipe
+    src |> orientations |> Seq.map (fun s-> s,dest)
+
 let chunk (g: Grid) : Grid[,] =
     let size = Array2D.length1 g
     if size % 2 = 0 
     then chunkBy 2 g 
     else chunkBy 3 g
 
-let buildRecipes : string seq -> Recipes = parseRecipes (*>> Seq.collect recipeOrientations*) >> Map.ofSeq
+let buildRecipes : string seq -> Recipes = parseRecipes >> Seq.collect recipeOrientations >> Map.ofSeq
 
 ///Find and apply the first recipe that matches
 let apply (recipes : Recipes) (g : Grid) = 
