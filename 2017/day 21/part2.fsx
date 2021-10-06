@@ -68,17 +68,13 @@ let recipeOrientations recipe =
 
 let chunk (g: Grid) : Grid[,] =
     let size = Array2D.length1 g
-    if size % 2 = 0 
-    then chunkBy 2 g 
-    else chunkBy 3 g
+    let chunkSize = if size % 2 = 0 then 2 else 3
+    chunkBy chunkSize g 
 
 let buildRecipes : string seq -> Recipes = parseRecipes >> Seq.collect recipeOrientations >> Map.ofSeq
 
-///Find and apply the first recipe that matches
 let apply (recipes : Recipes) (g : Grid) = 
-    g 
-    |> orientations 
-    |> Seq.pick (fun o -> recipes |> Map.tryFind o)
+    recipes |> Map.find g
 
 let next (recipes : Recipes) (g : Grid) : Grid =
     g
@@ -87,23 +83,29 @@ let next (recipes : Recipes) (g : Grid) : Grid =
     |> join
 
 let rec repeat n f x =
-    printfn "."
+    //printfn "."
     if n = 0 then x
     else 
         let next = f x
         repeat (n - 1) f next
 
-let part2 input start =
+let solve repeats input start =
     let recipes = input |> buildRecipes
     let parsed = start |> parseGrid
-    repeat 18 (next recipes) parsed
-
+    repeat repeats (next recipes) parsed
+    |> Seq.cast<State> 
+    |> Seq.filter ((=)On) 
+    |> Seq.length
+    
 let start = ".#./..#/###"
-part2 input start |> Seq.cast<State> |> Seq.filter ((=)On) |> Seq.length
-
+//#time Real: 00:00:25.932, CPU: 00:00:26.000, GC gen0: 151, gen1: 14, gen2: 3
+//solve 18 input start //2498142
 printf "Testing..."
 test <@ parseRecipe ".##/###/##. => .#.#/.##./.##./##.." = (array2D [ [Off;On;On];[On;On;On];[On;On;Off] ], array2D [ [Off;On;Off;On];[Off;On;On;Off];[Off;On;On;Off];[On;On;Off;Off] ]) @>
 test <@ array2D [ [Off;On];[On;Off] ] |> chunk =  array2D [[array2D [[Off; On]; [On; Off]]]] @>
 test <@ array2D [ [Off;On;Off;On];[Off;On;On;Off];[Off;On;On;Off];[On;On;Off;Off] ] |> chunk = array2D [[array2D [[Off; On]; [Off; On]]; array2D [[Off; On]; [On; Off]]];[array2D [[Off; On]; [On; On]]; array2D [[On; Off]; [Off; Off]]]] @>
+
+solve 5 input start =! 171
+
 printfn "..done!"
 
